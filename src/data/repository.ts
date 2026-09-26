@@ -1,4 +1,4 @@
-import { HABIT_COLORS, HABIT_EMOJIS } from '@/constants/habits';
+import { HABIT_EMOJIS } from '@/constants/habits';
 import type { Database } from '@/data/database';
 import { type AppSettings, type Habit, type HabitCompletion, type HabitData, type HabitInput, UserInputError } from '@/models/habit';
 import { canCompleteDate, localDateKey } from '@/utils/dates';
@@ -14,7 +14,7 @@ export function validateHabit(input: HabitInput): HabitInput {
   if (title.length > 80) throw new UserInputError('Keep your title under 80 characters.');
   if (input.description.length > 500) throw new UserInputError('Keep your description under 500 characters.');
   if (!HABIT_EMOJIS.some((emoji) => emoji === input.emoji)) throw new UserInputError('Choose an emoji for your habit.');
-  if (!HABIT_COLORS.some((color) => color.value === input.color)) throw new UserInputError('Choose a color for your habit.');
+  if (!/^#[\da-f]{6}$/i.test(input.color)) throw new UserInputError('Choose a color for your habit.');
   return { ...input, title, description: input.description.trim() };
 }
 

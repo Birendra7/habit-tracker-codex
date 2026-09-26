@@ -1,18 +1,25 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import Stack from 'expo-router/stack';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { useEffect } from 'react';
+import { AppStack } from '@/components/app-stack';
+import { AppProvider } from '@/providers/app-provider';
+import { AppTheme } from '@/providers/app-theme';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
-SplashScreen.preventAutoHideAsync();
+export const unstable_settings = { anchor: '(tabs)' };
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function RootLayout() {
+  useEffect(() => { void SplashScreen.hideAsync().catch(() => undefined); }, []);
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <AppProvider>
+      <AppTheme>
+        <AppStack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="habit/[id]" options={{ title: 'Habit' }} />
+          <Stack.Screen name="habit-form" options={{ presentation: 'modal', title: 'New habit' }} />
+        </AppStack>
+      </AppTheme>
+    </AppProvider>
   );
 }
