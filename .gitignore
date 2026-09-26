@@ -45,6 +45,7 @@ example
 # Local tools, test output, and personal data
 .claude/
 .codex/
+.vscode/
 coverage/
 *.db
 *.db-shm

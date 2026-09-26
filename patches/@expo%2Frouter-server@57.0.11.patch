@@ -1,0 +1,28 @@
+diff --git a/build/typed-routes/generate.js b/build/typed-routes/generate.js
+index 8c0627238cd0139ba4345673b414ca95e7404f34..52ba33831de2e890156afb265e792e37c6edd332 100644
+--- a/build/typed-routes/generate.js
++++ b/build/typed-routes/generate.js
+@@ -118,7 +118,7 @@ function groupRouteNodes(routeNode, groupedContextKeys = {
+         routeKey = routeNode.route;
+     }
+     else {
+-        routeKey = (0, routing_1.removeSupportedExtensions)(routeNode.contextKey)
++        routeKey = (0, routing_1.removeSupportedExtensions)(routeNode.contextKey.replace(/\\/g, '/'))
+             .replace(/\/index$/, '') // Remove any trailing /index
+             .replace(/^\./, ''); // Remove any leading .
+     }
+diff --git a/build/typed-routes/index.js b/build/typed-routes/index.js
+index 52289a13ee7ba16b36d73463857753928ed81c62..d9fdd4a808c46426ba568c5ee4f0410df26ebfd6 100644
+--- a/build/typed-routes/index.js
++++ b/build/typed-routes/index.js
+@@ -28,8 +28,8 @@ function getWatchHandler(outputDir, { ctx = defaultCtx, regenerateFn = exports.r
+         if (!process.env.EXPO_ROUTER_APP_ROOT)
+             return;
+         let shouldRegenerate = false;
+-        let relativePath = node_path_1.default.relative(process.env.EXPO_ROUTER_APP_ROOT, filePath);
+-        const isInsideAppRoot = !relativePath.startsWith('../');
++        let relativePath = node_path_1.default.relative(process.env.EXPO_ROUTER_APP_ROOT, filePath).replace(/\\/g, '/');
++        const isInsideAppRoot = !relativePath.startsWith('../') && !node_path_1.default.isAbsolute(relativePath);
+         const basename = node_path_1.default.basename(relativePath);
+         if (!isInsideAppRoot)
+             return;
