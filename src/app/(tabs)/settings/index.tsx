@@ -52,7 +52,7 @@ export default function SettingsScreen() {
           borderWidth: 1, padding: 20, minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 12, opacity: pressed ? 0.6 : 1 })}>
           <AppText style={{ flex: 1, fontWeight: '600' }}>Archived habits</AppText>
           <AppText secondary style={{ fontVariant: ['tabular-nums'] }}>{habits.filter((habit) => habit.archived).length}</AppText>
-          <Text accessible={false} style={{ fontSize: 23, color: colors.secondary }}>›</Text>
+          <Text accessible={false} allowFontScaling={false} style={{ fontSize: 23, color: colors.secondary }}>›</Text>
         </Pressable>
       </Link>
     </View>

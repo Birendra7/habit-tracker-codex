@@ -37,7 +37,7 @@ export default function HomeScreen() {
         </View>}
       </View>}
       ListEmptyComponent={<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 18, paddingVertical: 48, paddingHorizontal: 16 }}>
-        <View style={{ width: 88, height: 88, borderRadius: 28, backgroundColor: colors.subtle, alignItems: 'center', justifyContent: 'center' }}><Text accessible={false} style={{ fontSize: 40 }}>🌱</Text></View>
+        <View style={{ width: 88, height: 88, borderRadius: 28, backgroundColor: colors.subtle, alignItems: 'center', justifyContent: 'center' }}><Text accessible={false} allowFontScaling={false} style={{ fontSize: 40 }}>🌱</Text></View>
         <AppText style={{ fontSize: 23, lineHeight: 32, fontWeight: '600', textAlign: 'center' }}>Small steps, every day.</AppText>
         <AppText secondary style={{ textAlign: 'center', maxWidth: 280 }}>Choose something you want to make time for. Start with one habit.</AppText>
         <Button label="Create your first habit" onPress={addHabit} />

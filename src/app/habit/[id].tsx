@@ -29,7 +29,7 @@ export default function HabitDetailScreen() {
       onPress={() => router.push({ pathname: '/habit-form', params: { id: habit.id } })} /> }} />
     <View style={{ alignItems: 'center', gap: 12, paddingVertical: 8 }}>
       <View style={{ width: 80, height: 80, borderRadius: 26, borderCurve: 'continuous', backgroundColor: `${habit.color}22`, alignItems: 'center', justifyContent: 'center' }}>
-        <Text accessible={false} style={{ fontSize: 40 }}>{habit.emoji}</Text>
+        <Text accessible={false} allowFontScaling={false} style={{ fontSize: 40 }}>{habit.emoji}</Text>
       </View>
       {habit.archived && <SectionLabel>ARCHIVED</SectionLabel>}
       {!!habit.description && <AppText secondary style={{ textAlign: 'center' }}>{habit.description}</AppText>}

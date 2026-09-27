@@ -26,19 +26,19 @@ export function HabitEditor({ habit, pending, onSave, onCancel }: {
       headerRight: () => <HeaderButton label="Save" disabled={busy || !input.title.trim()} onPress={save} /> }} />
     <View style={{ alignItems: 'center', paddingVertical: 8, gap: 10 }}>
       <View style={{ width: 76, height: 76, borderRadius: 24, borderCurve: 'continuous', backgroundColor: `${input.color}22`, alignItems: 'center', justifyContent: 'center' }}>
-        <Text accessible={false} style={{ fontSize: 38 }}>{input.emoji}</Text>
+        <Text accessible={false} allowFontScaling={false} style={{ fontSize: 38 }}>{input.emoji}</Text>
       </View>
       <AppText secondary style={{ fontSize: 14 }}>A little intention goes a long way.</AppText>
     </View>
     <View style={{ gap: 10 }}>
       <AppText style={{ fontWeight: '600' }}>Title</AppText>
-      <TextInput accessibilityLabel="Habit title" placeholder="e.g. Read a little" placeholderTextColor={colors.disabled}
+      <TextInput accessibilityLabel="Habit title" placeholder="e.g. Read a little" placeholderTextColor={colors.secondary}
         value={input.title} onChangeText={(value) => set('title', value)} editable={!busy} maxLength={80} autoCapitalize="sentences"
         returnKeyType="next" onSubmitEditing={() => descriptionRef.current?.focus()} style={textInputStyle} />
     </View>
     <View style={{ gap: 10 }}>
       <AppText style={{ fontWeight: '600' }}>Description <AppText secondary style={{ fontSize: 14 }}>optional</AppText></AppText>
-      <TextInput ref={descriptionRef} accessibilityLabel="Habit description" placeholder="What does this habit mean to you?" placeholderTextColor={colors.disabled}
+      <TextInput ref={descriptionRef} accessibilityLabel="Habit description" placeholder="What does this habit mean to you?" placeholderTextColor={colors.secondary}
         value={input.description} onChangeText={(value) => set('description', value)} editable={!busy} maxLength={500} multiline
         style={{ ...textInputStyle, minHeight: 104, textAlignVertical: 'top' }} />
     </View>
@@ -49,7 +49,7 @@ export function HabitEditor({ habit, pending, onSave, onCancel }: {
           accessibilityState={{ selected: input.emoji === emoji, disabled: busy }} disabled={busy} onPress={() => set('emoji', emoji)}
           style={({ pressed }) => ({ width: 48, height: 48, borderRadius: 14, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center',
             backgroundColor: input.emoji === emoji ? colors.subtle : colors.surface, borderColor: input.emoji === emoji ? colors.primary : colors.border, opacity: pressed ? 0.6 : 1 })}>
-          <Text style={{ fontSize: 25 }}>{emoji}</Text>
+          <Text allowFontScaling={false} style={{ fontSize: 25 }}>{emoji}</Text>
         </Pressable>)}
       </View>
     </View>
@@ -60,7 +60,7 @@ export function HabitEditor({ habit, pending, onSave, onCancel }: {
           accessibilityState={{ selected: input.color === value, disabled: busy }} disabled={busy} onPress={() => set('color', value)}
           style={({ pressed }) => ({ width: 48, height: 48, borderRadius: 24, borderWidth: 1.5, borderColor: input.color === value ? colors.primary : 'transparent', alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.6 : 1 })}>
           <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: value, alignItems: 'center', justifyContent: 'center' }}>
-            {input.color === value && <Text style={{ color: '#FFFFFF', fontSize: 20, fontWeight: '700' }}>✓</Text>}
+            {input.color === value && <Text allowFontScaling={false} style={{ color: '#FFFFFF', fontSize: 20, fontWeight: '700' }}>✓</Text>}
           </View>
         </Pressable>)}
       </View>

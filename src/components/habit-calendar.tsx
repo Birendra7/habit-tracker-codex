@@ -26,7 +26,7 @@ export function HabitCalendar({ today, createdDate, completed, color, readOnly, 
         return <Pressable key={offset} accessibilityRole="button" accessibilityLabel={offset === -1 ? 'Previous month' : 'Next month'}
           accessibilityState={{ disabled }} disabled={disabled} onPress={() => setMonth(destination)}
           style={({ pressed }) => ({ width: 44, height: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 14, backgroundColor: colors.subtle, opacity: disabled ? 0.3 : pressed ? 0.6 : 1 })}>
-          <Text style={{ fontSize: 28, color: colors.text }}>{offset === -1 ? '‹' : '›'}</Text>
+          <Text allowFontScaling={false} style={{ fontSize: 28, color: colors.text }}>{offset === -1 ? '‹' : '›'}</Text>
         </Pressable>;
       })}
     </View>

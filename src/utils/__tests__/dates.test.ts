@@ -31,10 +31,11 @@ describe('calendar dates', () => {
     expect(canCompleteDate('2026-09-27', '2026-09-25', '2026-09-26')).toBe(false);
   });
   test('schedules the next local midnight instead of a fixed 24 hours', () => {
-    const now = new Date(2026, 2, 8, 0, 0, 0);
-    const next = new Date(now.getTime() + millisecondsUntilNextDay(now));
-    expect(localDateKey(next)).toBe('2026-03-09');
-    expect(next.getHours()).toBe(0);
+    for (const [now, expected] of [[new Date(2026, 2, 8), '2026-03-09'], [new Date(2026, 10, 1), '2026-11-02']] as const) {
+      const next = new Date(now.getTime() + millisecondsUntilNextDay(now));
+      expect(localDateKey(next)).toBe(expected);
+      expect(next.getHours()).toBe(0);
+    }
     expect(millisecondsUntilNextDay(new Date(2026, 8, 26, 23, 59, 59))).toBe(1050);
   });
   test('formats calendar dates without local timezone shifts', () => {

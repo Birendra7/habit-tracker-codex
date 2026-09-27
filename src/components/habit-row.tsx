@@ -23,12 +23,13 @@ export function HabitRow({ habit, today, completed = false }: { habit: Habit; to
         <Pressable accessibilityRole="button" accessibilityLabel={`${habit.title}. View habit history`}
           style={({ pressed }) => ({ flex: 1, flexDirection: 'row', gap: 14, alignItems: 'center', padding: 16, opacity: pressed ? 0.6 : 1 })}>
           <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: `${habit.color}20`, borderLeftWidth: 3, borderLeftColor: habit.color, alignItems: 'center', justifyContent: 'center' }}>
-            <Text accessible={false} style={{ fontSize: 25 }}>{habit.emoji}</Text>
+            <Text accessible={false} allowFontScaling={false} style={{ fontSize: 25 }}>{habit.emoji}</Text>
           </View>
           <View style={{ flex: 1, gap: 2 }}>
             <AppText style={{ fontSize: 17, fontWeight: '600' }}>{habit.title}</AppText>
             {!!habit.description && <AppText secondary numberOfLines={2} style={{ fontSize: 14, lineHeight: 20 }}>{habit.description}</AppText>}
           </View>
+          {!today && <Text accessible={false} allowFontScaling={false} style={{ fontSize: 24, color: colors.secondary }}>›</Text>}
         </Pressable>
       </Link>
       {today ? (
@@ -41,11 +42,11 @@ export function HabitRow({ habit, today, completed = false }: { habit: Habit; to
           <View style={{ width: 30, height: 30, borderRadius: 15, borderWidth: completed ? 0 : 1.5, borderColor: colors.disabled,
             backgroundColor: completed ? habit.color : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
             {saving ? <ActivityIndicator size="small" color={completed ? '#FFFFFF' : colors.primary} /> : completed ? (
-              <Animated.Text entering={FadeIn.duration(140).reduceMotion(ReduceMotion.System)} style={{ color: '#FFFFFF', fontSize: 20, fontWeight: '700' }}>✓</Animated.Text>
+              <Animated.Text allowFontScaling={false} entering={FadeIn.duration(140).reduceMotion(ReduceMotion.System)} style={{ color: '#FFFFFF', fontSize: 20, fontWeight: '700' }}>✓</Animated.Text>
             ) : null}
           </View>
         </Pressable>
-      ) : <Text accessible={false} style={{ fontSize: 24, color: colors.secondary, paddingRight: 8 }}>›</Text>}
+      ) : null}
     </View>
     <ErrorMessage message={action.error} />
   </View>;

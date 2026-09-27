@@ -1,56 +1,61 @@
-# Welcome to your Expo app 👋
+# Habit Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A minimal, offline habit tracker for iOS and Android. Built with Expo SDK 57, React Native, Expo Router native tabs, and SQLite.
 
-## Get started
+## Run
 
-1. Install dependencies
+Use Node.js 24 and Bun. Install dependencies from the lockfile:
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```sh
+bun install --frozen-lockfile
+bunx expo start --go
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Open the project in an Expo Go version that supports SDK 57. Scan the terminal QR code on a phone on the same network. The app uses Expo Go's bundled SQLite and haptics modules; no custom native build is needed for these features. The browser entry only explains that tracking is available on mobile.
 
-### Other setup steps
+## Features
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- Home shows active habits and today's completion count. Tap the check circle to complete or undo; tap a habit to view history.
+- Create or edit a title, optional description, emoji, and color. New habits start today.
+- Each habit has current and longest streaks and a Monday-first monthly calendar. Correct any day from creation through today.
+- Archive habits without deleting their history. Restore them from Settings → Archived habits.
+- Settings offers System/Light/Dark appearance and optional completion haptics.
+- Empty, loading, missing-habit, and recoverable save/startup error states are included.
 
-## Learn more
+## Local data
 
-To learn more about developing your project with Expo, look at the following resources:
+`habits.db` lives in the app's SQLite directory. It contains habits, a unique completion per habit/calendar date, and application settings. There is no account, server, telemetry, or network requirement for tracking.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Migrations use `PRAGMA user_version` and transactions. Writes are serialized, parameterized, and reflected in shared UI state only after committing. Archiving keeps all progress. App restarts preserve data; uninstalling the app or clearing its storage can remove it. Backup, restore, and cloud sync are outside this version.
 
-## Join the community
+Dates are stored as local `YYYY-MM-DD` values, never derived from a UTC timestamp. Historical dates remain fixed during timezone changes. A current streak can end yesterday while today is still incomplete. Archived gaps are not automatically filled when a habit is restored.
 
-Join our community of developers creating universal apps.
+## Project layout
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- `src/app/`: root stack, Home/Settings tab stacks, shared habit details, and modal editor routes.
+- `src/components/`: reusable mobile controls, habit rows, editor, and calendar.
+- `src/data/`: database schema/migrations, repository, and observable state with coordinated writes.
+- `src/hooks/`, `src/providers/`, `src/utils/`: preferences, startup/retry, date changes, and streak calculations.
+- `tests/sqlite-adapter.ts`: test adapter that runs production SQL against Node's real SQLite engine.
+
+## Checks
+
+```sh
+bunx expo lint
+bunx tsc --noEmit
+bun run test
+bunx expo-doctor
+bunx expo export --platform ios --platform android --output-dir dist/native
+```
+
+Start Expo once after adding routes so that it generates the ignored `.expo/types/router.d.ts` file. Tests cover database reopen persistence, migration safety, duplicate/failed writes, streaks, calendar boundaries, forms, check-offs, archive/restore, settings, startup retry, and day rollover. Native hardware checks are listed in [the validation notes](docs/validation.md).
+
+### Windows route types
+
+Bun automatically applies `patches/@expo%2Frouter-server@57.0.11.patch`. It normalizes Windows separators before checking whether watched files belong to the route directory and before stripping `/index` from generated types. Without it, this SDK version can generate routes for sibling components and reject the valid `/` route. The patch has a regression test; remove it once the project upgrades to an upstream version containing the fixes.
+
+ESLint is pinned to major version 9 for compatibility with this SDK's React lint rules.
+
+## First version boundaries
+
+Habits are daily, with one completion per day. Custom schedules, numeric goals, reminders, permanent deletion, cloud sync, file backup/restore, and browser tracking are deferred. UI follows the Expo building-native-ui skill, with system fonts, native navigation, accessible controls, restrained color, and reduced-motion-aware feedback.

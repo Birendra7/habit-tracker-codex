@@ -64,6 +64,32 @@ describe('SQLite persistence', () => {
     expect((await repository.readAll()).habits[0].title).toBe(habit.title);
     await expect(connection.db.runAsync('INSERT INTO completions VALUES (?, ?)', 999, '2026-09-26')).rejects.toThrow();
   });
+  test('allows adding and undoing a missed day after creation', async () => {
+    let now = new Date(2026, 8, 24, 12);
+    const repo = createRepository(connection.db, () => now);
+    const habit = await repo.createHabit(input);
+    now = new Date(2026, 8, 26, 12);
+    await repo.setCompletion(habit.id, '2026-09-25', true);
+    expect((await repo.readAll()).completions).toEqual([{ habitId: habit.id, date: '2026-09-25' }]);
+    await repo.setCompletion(habit.id, '2026-09-25', false);
+    expect((await repo.readAll()).completions).toEqual([]);
+  });
+  test('rolls back an interrupted migration and can retry without partial tables', async () => {
+    const fresh = openTestDatabase();
+    try {
+      const execute = fresh.db.execAsync.bind(fresh.db);
+      const fault = jest.spyOn(fresh.db, 'execAsync').mockImplementation(async (sql) => {
+        await execute(sql);
+        if (sql.includes('CREATE TABLE habits')) throw new Error('interrupted');
+      });
+      await expect(migrateDatabase(fresh.db)).rejects.toThrow('interrupted');
+      expect(await fresh.db.getFirstAsync('PRAGMA user_version')).toEqual({ user_version: 0 });
+      expect(await fresh.db.getFirstAsync("SELECT name FROM sqlite_master WHERE name = 'habits'")).toBeNull();
+      fault.mockRestore();
+      await migrateDatabase(fresh.db);
+      expect((await createRepository(fresh.db, clock).readAll()).habits).toEqual([]);
+    } finally { fresh.close(); }
+  });
   test('does not overwrite a database created by a newer version', async () => {
     await repository.createHabit(input);
     await connection.db.execAsync('PRAGMA user_version = 2');
